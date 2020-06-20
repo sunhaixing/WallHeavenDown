@@ -32,18 +32,24 @@ public class App {
 	private String saveOldPath;
 	private String newPath;
 	private NotifyDialog nDialog;
+	private boolean hasUI;
+	private String osName;
 	
     public App() {
-        saveDir = String.format(System.getProperty("user.home") + "\\%s", "wallhaven");
-        savePath = String.format("%s\\%s", saveDir, "last.jpg");
+        saveDir = String.format(System.getProperty("user.home") + "/%s", ".WallHeaven");
+        savePath = String.format("%s/%s", saveDir, "last.jpg");
         newPath = String.format("%s.%s", savePath, "new");
-        saveOldDir = String.format("%s\\%s", saveDir, "old");
-        saveOldPath = String.format("%s\\%s", saveOldDir, System.currentTimeMillis() + ".jpg");
+        saveOldDir = String.format("%s/%s", saveDir, "old");
+        saveOldPath = String.format("%s/%s", saveOldDir, System.currentTimeMillis() + ".jpg");
 
         checkDirExists(saveDir);
         checkDirExists(saveOldDir);
-        
-        nDialog = new NotifyDialog();
+        hasUI = System.getProperty("sun.desktop") != null;
+		osName = System.getProperty("os.name");
+
+        if(hasUI) {
+			nDialog = new NotifyDialog();
+		}
     }
 
     private String isNSFW() {
@@ -60,16 +66,20 @@ public class App {
 		return ret;		
 	}
 
-	public static void main(String[] args) {
-    	 
+	public static void main(String[] args) throws IOException {
+
         App app = new App();
-        app.nDialog.Show();
+        if(app.nDialog != null)
+        	app.nDialog.Show();
+
 		if(app.getImageWallhaven()) {
 			app.moveFile(app.savePath, app.saveOldPath);
 			app.moveFile(app.newPath, app.savePath);
 			app.setWallPaper(app.savePath);
 		}
-		app.nDialog.Hide();
+
+		if(app.nDialog != null)
+			app.nDialog.Hide();
     }
     
     private void doWithApacheHttpClient(String u, String p) {
@@ -106,8 +116,13 @@ public class App {
     	return ret;
     } 
     
-    private void setWallPaper(String imgFileName) {
-		User32.INSTANCE.SystemParametersInfoA(20, 0, imgFileName, 0);		
+    private void setWallPaper(String imgFileName) throws IOException {
+		if(osName.toLowerCase().contains("windows")) {
+			User32.INSTANCE.SystemParametersInfoA(20, 0, imgFileName, 0);
+		} else if (osName.toLowerCase().contains("linux")) {
+			Runtime.getRuntime().exec("gsettings set org.gnome.desktop.background picture-uri " + imgFileName);
+		}
+
 	}
     
     private void moveFile(String of, String nf) {
