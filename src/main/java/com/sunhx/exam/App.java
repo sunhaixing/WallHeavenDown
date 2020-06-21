@@ -26,25 +26,22 @@ public class App {
 				+ "&sorting=random"
 				+ "&resolutions=%dx%d"
 				+ "&page=1";
-	private String saveDir;
-	private String savePath;
-	private String saveOldDir;
-	private String saveOldPath;
-	private String newPath;
+	private final String savePath;
+	private final String saveOldPath;
+	private final String newPath;
 	private NotifyDialog nDialog;
-	private boolean hasUI;
-	private String osName;
+	private final String osName;
 	
     public App() {
-        saveDir = String.format(System.getProperty("user.home") + "/%s", ".WallHeaven");
+		String saveDir = String.format(System.getProperty("user.home") + "/%s", ".WallHeaven");
         savePath = String.format("%s/%s", saveDir, "last.jpg");
         newPath = String.format("%s.%s", savePath, "new");
-        saveOldDir = String.format("%s/%s", saveDir, "old");
+		String saveOldDir = String.format("%s/%s", saveDir, "old");
         saveOldPath = String.format("%s/%s", saveOldDir, System.currentTimeMillis() + ".jpg");
 
         checkDirExists(saveDir);
         checkDirExists(saveOldDir);
-        hasUI = System.getProperty("sun.desktop") != null;
+		boolean hasUI = System.getProperty("sun.desktop") != null;
 		osName = System.getProperty("os.name");
 
         if(hasUI) {
@@ -54,6 +51,7 @@ public class App {
 
     private String isNSFW() {
         String ret = "purity=110";
+		System.out.println(System.getProperty("user.dir"));
 		File f = new File("NSFW");
 		if(!f.exists()) {
 		    return ret;
@@ -130,7 +128,7 @@ public class App {
         if (f.exists()) {
             if(!f.renameTo(new File(nf))) {
                 System.out.println("error");
-            };
+            }
         }
     }
 

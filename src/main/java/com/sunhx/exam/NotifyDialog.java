@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -19,7 +17,7 @@ class NotifyDialog extends JFrame {
 	private static final long serialVersionUID = -1158010833749782259L;
 
 	private int i = 0;
-	private Timer tmr;
+	private final Timer tmr;
 	private int x, y;
 	
 	public NotifyDialog() {
@@ -37,20 +35,17 @@ class NotifyDialog extends JFrame {
 		lblOut.setForeground(new Color(0xD6, 0x34, 0x47));
 		lblOut.setOpaque(true);
 		add(lblOut, BorderLayout.CENTER);
-		lblOut.setFont(new Font("Brush Script MT", 0, 40));
+		lblOut.setFont(new Font("Brush Script MT", Font.PLAIN, 40));
 		
 		lblOut.addMouseMotionListener(new MouseMotionListener() {
 			
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				// TODO Auto-generated method stub
 				
 			}
 			
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				
-				
 				NotifyDialog.this.setLocation(
 						NotifyDialog.this.getLocation().x + e.getX() - x, 
 						NotifyDialog.this.getLocation().y + e.getY() - y);
@@ -72,27 +67,22 @@ class NotifyDialog extends JFrame {
 			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
 				
 			}
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
 				
 			}
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
 				
 			}
 		});
-		tmr = new Timer(1000, new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				i++;
-				lblOut.setText("" + i);
-			}
+		tmr = new Timer(1000, e -> {
+			i++;
+			lblOut.setText("" + i);
 		});
 	}
 	
